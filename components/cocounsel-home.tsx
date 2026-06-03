@@ -38,9 +38,9 @@ export function CoCounselHome() {
           </button>
         </header>
 
-        {/* Main content */}
-        <main className="flex flex-1 flex-col items-center justify-center overflow-auto px-4 py-8 sm:px-8">
-          <div className="flex w-full max-w-2xl flex-col items-center gap-6 min-w-0">
+        {/* Main content — absolute so it spans the full viewport for true centering */}
+        <main className="absolute inset-0 flex flex-col items-center justify-center overflow-auto px-4 py-8 sm:px-8 pointer-events-none">
+          <div className="flex w-full max-w-2xl flex-col items-center gap-6 min-w-0 pointer-events-auto">
             {/* TR animated logo */}
             <div aria-hidden="true">
               <TRLargeLogo />
