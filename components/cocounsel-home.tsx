@@ -4,9 +4,19 @@ import { useState } from 'react'
 import { Sidebar } from '@/components/sidebar'
 import { PromptInput } from '@/components/prompt-input'
 import { TemplateChips } from '@/components/template-chips'
+import { NewEngagementTemplate } from '@/components/new-engagement-template'
 
 export function CoCounselHome() {
   const [_submitted, setSubmitted] = useState<string | null>(null)
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
+
+  const handleTemplateSelect = (template: string) => {
+    if (template === 'Start a new engagement') {
+      setActiveTemplate('new-engagement')
+    } else {
+      setSubmitted(template)
+    }
+  }
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-white">
@@ -52,13 +62,25 @@ export function CoCounselHome() {
               <p className="mt-1 text-sm text-gray-500">What are you working on today?</p>
             </div>
 
-            {/* Prompt input */}
+            {/* Prompt input or active template */}
             <div className="w-full">
-              <PromptInput onSubmit={(val) => setSubmitted(val)} />
+              {activeTemplate === 'new-engagement' ? (
+                <NewEngagementTemplate
+                  onRemove={() => setActiveTemplate(null)}
+                  onUse={(data) => {
+                    setActiveTemplate(null)
+                    setSubmitted(JSON.stringify(data))
+                  }}
+                />
+              ) : (
+                <PromptInput onSubmit={(val) => setSubmitted(val)} />
+              )}
             </div>
 
-            {/* Template chips */}
-            <TemplateChips onSelect={(template) => setSubmitted(template)} />
+            {/* Template chips — hide when a template is active */}
+            {activeTemplate === null && (
+              <TemplateChips onSelect={handleTemplateSelect} />
+            )}
           </div>
         </main>
       </div>
