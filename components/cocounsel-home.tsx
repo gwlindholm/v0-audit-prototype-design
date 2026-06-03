@@ -9,11 +9,11 @@ export function CoCounselHome() {
   const [_submitted, setSubmitted] = useState<string | null>(null)
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white">
+    <div className="relative flex h-screen w-full overflow-hidden bg-white">
       <Sidebar />
 
-      {/* Top bar */}
-      <div className="flex flex-1 flex-col">
+      {/* Top bar — spans only the content column */}
+      <div className="flex flex-1 flex-col min-w-0">
         <header className="flex h-12 shrink-0 items-center justify-between border-b px-4"
           style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
         >
@@ -38,9 +38,9 @@ export function CoCounselHome() {
           </button>
         </header>
 
-        {/* Main content */}
-        <main className="flex flex-1 flex-col items-center justify-center overflow-auto px-4 py-8 sm:px-8">
-          <div className="flex w-full max-w-2xl flex-col items-center gap-6 min-w-0">
+        {/* Main content — uses absolute inset so it centers against the full viewport */}
+        <main className="absolute inset-0 flex flex-col items-center justify-center overflow-auto px-4 py-8 sm:px-8 pointer-events-none">
+          <div className="flex w-full max-w-2xl flex-col items-center gap-6 min-w-0 pointer-events-auto">
             {/* TR animated logo */}
             <div aria-hidden="true">
               <TRLargeLogo />
