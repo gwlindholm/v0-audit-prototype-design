@@ -73,7 +73,7 @@ export function NewEngagementTemplate({ onRemove, onUse }: NewEngagementTemplate
 
   return (
     <div
-      className="w-full rounded-2xl border bg-white text-sm"
+      className="w-full rounded-2xl border bg-white text-sm text-left"
       style={{ borderColor: 'var(--saf-color-neutral-300, #d1d5db)' }}
     >
       {/* Required note */}
