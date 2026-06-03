@@ -6,11 +6,13 @@ import { PromptInput } from '@/components/prompt-input'
 import { TemplateChips } from '@/components/template-chips'
 import { NewEngagementTemplate } from '@/components/new-engagement-template'
 import { ConversationView } from '@/components/conversation-view'
+import { WorkspaceView } from '@/components/workspace-view'
 
 export function CoCounselHome() {
   const [prefillPrompt, setPrefillPrompt] = useState<string>('')
   const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
   const [conversationPrompt, setConversationPrompt] = useState<string | null>(null)
+  const [activeNav, setActiveNav] = useState<string>('Conversations')
 
   const handleTemplateSelect = (template: string) => {
     if (template === 'Start a new engagement') {
@@ -50,11 +52,20 @@ export function CoCounselHome() {
     setPrefillPrompt(prompt)
   }
 
-  const isInConversation = conversationPrompt !== null
+  const isInConversation = conversationPrompt !== null && activeNav === 'Conversations'
+  const isInWorkspace = activeNav === 'Workspaces'
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-white">
-      <Sidebar />
+      <Sidebar
+        activeItem={activeNav}
+        onNavigate={(label) => {
+          setActiveNav(label)
+          if (label !== 'Conversations') {
+            // keep conversation state intact so user can return
+          }
+        }}
+      />
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
@@ -84,6 +95,11 @@ export function CoCounselHome() {
               New Audit Engagement
             </p>
           )}
+          {isInWorkspace && (
+            <p className="text-sm font-semibold text-gray-800 text-balance text-center">
+              Risk Planning
+            </p>
+          )}
 
           <button
             className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
@@ -95,10 +111,14 @@ export function CoCounselHome() {
           </button>
         </header>
 
-        {/* Conversation view */}
-        {isInConversation ? (
+        {/* Workspace view */}
+        {isInWorkspace ? (
           <main className="flex flex-1 flex-col overflow-hidden">
-            <ConversationView userPrompt={conversationPrompt} />
+            <WorkspaceView />
+          </main>
+        ) : isInConversation ? (
+          <main className="flex flex-1 flex-col overflow-hidden">
+            <ConversationView userPrompt={conversationPrompt} onNavigate={setActiveNav} />
           </main>
         ) : (
           /* Home / prompt view */
