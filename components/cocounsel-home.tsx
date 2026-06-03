@@ -7,15 +7,45 @@ import { TemplateChips } from '@/components/template-chips'
 import { NewEngagementTemplate } from '@/components/new-engagement-template'
 
 export function CoCounselHome() {
-  const [_submitted, setSubmitted] = useState<string | null>(null)
+  const [prefillPrompt, setPrefillPrompt] = useState<string>('')
   const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
 
   const handleTemplateSelect = (template: string) => {
     if (template === 'Start a new engagement') {
       setActiveTemplate('new-engagement')
-    } else {
-      setSubmitted(template)
     }
+  }
+
+  const handleEngagementUse = (data: {
+    client: string
+    startDate: string
+    endDate: string
+    keyAuditAreas: string[]
+    usePreviousYear: boolean | null
+  }) => {
+    const fmt = (d: string) => {
+      if (!d) return d
+      const [y, m, day] = d.split('-')
+      return `${m}/${day}/${y}`
+    }
+
+    const areasList = data.keyAuditAreas.join(', ')
+    const previousYear = data.usePreviousYear ? 'Yes' : 'No'
+
+    const prompt = [
+      `Start a new audit engagement for ${data.client}.`,
+      ``,
+      `Engagement period: ${fmt(data.startDate)} – ${fmt(data.endDate)}.`,
+      ``,
+      `Key audit areas to address: ${areasList}.`,
+      ``,
+      `Use previous year's engagement to recommend audit risk and procedure changes: ${previousYear}.`,
+      ``,
+      `Please generate an audit engagement plan including recommended audit procedures, identified risk areas, and any changes from the prior year engagement based on the selected parameters above.`,
+    ].join('\n')
+
+    setActiveTemplate(null)
+    setPrefillPrompt(prompt)
   }
 
   return (
@@ -67,13 +97,10 @@ export function CoCounselHome() {
               {activeTemplate === 'new-engagement' ? (
                 <NewEngagementTemplate
                   onRemove={() => setActiveTemplate(null)}
-                  onUse={(data) => {
-                    setActiveTemplate(null)
-                    setSubmitted(JSON.stringify(data))
-                  }}
+                  onUse={handleEngagementUse}
                 />
               ) : (
-                <PromptInput onSubmit={(val) => setSubmitted(val)} />
+                <PromptInput initialValue={prefillPrompt} onSubmit={() => {}} />
               )}
             </div>
 

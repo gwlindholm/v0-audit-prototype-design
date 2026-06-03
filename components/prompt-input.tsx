@@ -14,10 +14,11 @@ const MAX_CHARS = 45000
 
 interface PromptInputProps {
   onSubmit?: (value: string) => void
+  initialValue?: string
 }
 
-export function PromptInput({ onSubmit }: PromptInputProps) {
-  const [value, setValue] = useState('')
+export function PromptInput({ onSubmit, initialValue = '' }: PromptInputProps) {
+  const [value, setValue] = useState(initialValue)
 
   const handleSubmit = () => {
     if (value.trim() && onSubmit) onSubmit(value.trim())
@@ -42,7 +43,7 @@ export function PromptInput({ onSubmit }: PromptInputProps) {
         onKeyDown={handleKeyDown}
         placeholder="Ask CoCounsel..."
         aria-label="Ask CoCounsel"
-        rows={2}
+        rows={value.split('\n').length > 4 ? value.split('\n').length + 2 : 4}
         className="w-full resize-none rounded-t-2xl bg-transparent px-4 pt-3 pb-2 text-sm text-gray-800 placeholder-gray-400 outline-none"
         style={{ minHeight: '52px' }}
       />
