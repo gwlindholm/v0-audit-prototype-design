@@ -37,7 +37,7 @@ const templateItems: Record<string, { label: string }[]> = {
     { label: 'Review MD&A Section' },
   ],
   'Audit testing & review': [
-    { label: 'Staff Audit Workpaper Review' },
+    { label: 'Start a new engagement' },
     { label: 'Analyze Contributions Receivable' },
     { label: 'Reconcile Financial Statements to Supplementary Information' },
     { label: 'Review Financial Statement' },
