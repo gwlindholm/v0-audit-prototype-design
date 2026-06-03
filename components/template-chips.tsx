@@ -15,7 +15,7 @@ export function TemplateChips({ onSelect }: TemplateChipsProps) {
   return (
     <div className="flex flex-col items-center gap-3">
       <p className="text-sm text-gray-500">Or start from a template</p>
-      <div className="flex w-full flex-wrap justify-center gap-2">
+      <div className="flex flex-wrap justify-center gap-2">
         {templates.map((template) => (
           <button
             key={template}
