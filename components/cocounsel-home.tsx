@@ -40,7 +40,7 @@ export function CoCounselHome() {
 
         {/* Main content */}
         <main className="flex flex-1 flex-col items-center justify-center overflow-auto px-4 py-8 text-center">
-          <div className="flex w-full max-w-2xl flex-col items-center gap-6 text-center">
+          <div className="flex max-w-2xl flex-col items-center gap-6 text-center">
             {/* TR animated logo */}
             <div aria-hidden="true">
               <TRLargeLogo />
