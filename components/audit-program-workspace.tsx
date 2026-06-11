@@ -359,6 +359,7 @@ export function AuditProgramWorkspace({ onClose }: AuditProgramWorkspaceProps) {
   const [editMode, setEditMode] = useState(true)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const [inProgram, setInProgram] = useState<Record<string, boolean>>({})
+  const [hasUnsaved, setHasUnsaved] = useState(false)
 
   const activeArea = AUDIT_AREAS.find((a) => a.id === activeAreaId)!
 
