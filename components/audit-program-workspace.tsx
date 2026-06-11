@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, MoreHorizontal, Save, Link2, SlidersHorizontal,
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-type InProgram = 'Yes' | 'No' | 'N/A'
+type InProgram = boolean
 
 interface Procedure {
   id: string
@@ -44,25 +44,25 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'c1',
             text: 'Obtain a listing of all cash and cash equivalent accounts and agree to the general ledger.',
             assertions: 'EO, C, RO',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'c2',
             text: 'Send bank confirmation requests to all financial institutions holding cash balances.',
             assertions: 'EO, C, RO, V',
-            inProgram: 'Yes',
+            inProgram: true,
             children: [
               {
                 id: 'c2a',
                 text: 'Follow up on any outstanding confirmations within 10 business days.',
                 assertions: 'C',
-                inProgram: 'Yes',
+                inProgram: true,
               },
               {
                 id: 'c2b',
                 text: 'Investigate and resolve any discrepancies noted between confirmations and recorded balances.',
                 assertions: 'V, ACLP',
-                inProgram: 'Yes',
+                inProgram: true,
               },
             ],
           },
@@ -70,13 +70,13 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'c3',
             text: 'Perform bank reconciliation procedures for all accounts with balances greater than $50,000.',
             assertions: 'C, RO, V',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'c4',
             text: 'Test cash cutoff by reviewing disbursements and receipts for the five business days before and after year-end.',
             assertions: 'CO',
-            inProgram: 'No',
+            inProgram: false,
           },
         ],
       },
@@ -88,7 +88,7 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'c5',
             text: 'Obtain documentation supporting any amounts classified as restricted cash and evaluate appropriateness of classification.',
             assertions: 'C, PD',
-            inProgram: 'Yes',
+            inProgram: true,
           },
         ],
       },
@@ -108,19 +108,19 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'ar1',
             text: 'Obtain the accounts receivable aging schedule and agree total to the general ledger.',
             assertions: 'EO, C, RO',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'ar2',
             text: 'Send positive confirmation requests using statistical sampling methodology to a representative sample of customers.',
             assertions: 'EO, C, RO, V',
-            inProgram: 'Yes',
+            inProgram: true,
             children: [
               {
                 id: 'ar2a',
                 text: 'Apply alternative procedures (vouch to subsequent cash receipts) for non-responses.',
                 assertions: 'EO, C',
-                inProgram: 'Yes',
+                inProgram: true,
               },
             ],
           },
@@ -128,13 +128,13 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'ar3',
             text: 'Perform analytical procedures comparing AR turnover and days sales outstanding to prior year and budget.',
             assertions: 'C, V, ACLP',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'ar4',
             text: 'Evaluate the adequacy of the allowance for doubtful accounts by reviewing management\'s estimate and testing underlying assumptions.',
             assertions: 'V, ACLP',
-            inProgram: 'Yes',
+            inProgram: true,
           },
         ],
       },
@@ -154,19 +154,19 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'rv1',
             text: 'Evaluate the client\'s revenue recognition policy for compliance with ASC 606, focusing on the five-step model.',
             assertions: 'EO, C, PD',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'rv2',
             text: 'Select a sample of revenue transactions and trace from contract through recognition, verifying each step of the ASC 606 model is satisfied.',
             assertions: 'EO, C, RO, V, CO',
-            inProgram: 'Yes',
+            inProgram: true,
             children: [
               {
                 id: 'rv2a',
                 text: 'Focus selection on Q4 entries, manual journal entries, and entries near period-end.',
                 assertions: 'CO',
-                inProgram: 'Yes',
+                inProgram: true,
               },
             ],
           },
@@ -174,19 +174,19 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'rv3',
             text: 'Perform a regression analysis comparing current year revenue by product line to prior year, investigating variances exceeding 10% or $500K.',
             assertions: 'C, V, ACLP',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'rv4',
             text: 'Test journal entries for manual revenue postings, focusing on unusual entries, entries posted by IT or senior management, and entries near period-end.',
             assertions: 'EO, C, ACLP',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'rv5',
             text: 'Review contract modifications and variable consideration arrangements for appropriate accounting treatment.',
             assertions: 'V, PD',
-            inProgram: 'No',
+            inProgram: false,
           },
         ],
       },
@@ -206,31 +206,31 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'inv1',
             text: 'Perform the following valuation procedures:',
             assertions: 'EO, C, RO, V, ACLP',
-            inProgram: 'Yes',
+            inProgram: true,
             children: [
               {
                 id: 'inv1a',
                 text: 'If considered necessary, update your understanding obtained during planning of the valuation procedures used by the client. Identify any changes in specific products, production methods, accounting policies, methods used to accumulate cost of inventory items, or pricing policies and procedures of the entity; consider results of physical observation during the period; and determine their effects on inventory valuation.',
                 assertions: 'EO, C, RO, V, ACLP',
-                inProgram: 'Yes',
+                inProgram: true,
               },
               {
                 id: 'inv1b',
                 text: 'Determine whether allowances have been made for scrap, obsolete, unsalable, slow-moving, or overstocked items.',
                 assertions: 'V, ACLP',
-                inProgram: 'Yes',
+                inProgram: true,
               },
               {
                 id: 'inv1c',
                 text: "Determine the client's method for identifying potential problems. Inquire of production and sales personnel concerning possible excess, defective, obsolete, and other inventory items that might have valuation risks.",
                 assertions: 'V, ACLP',
-                inProgram: 'Yes',
+                inProgram: true,
               },
               {
                 id: 'inv1d',
                 text: 'Compare information obtained in the observation of the physical inventory count to the final inventory listing and investigate and explain any unusual differences.',
                 assertions: 'V, ACLP',
-                inProgram: 'No',
+                inProgram: false,
               },
             ],
           },
@@ -238,13 +238,13 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'inv2',
             text: 'Perform and document (including expectations) the following analytical procedures:',
             assertions: 'EO, C, V, ACLP, CO',
-            inProgram: 'Yes',
+            inProgram: true,
             children: [
               {
                 id: 'inv2a',
                 text: 'Compare balances of inventory with those of prior periods or other expectations.',
                 assertions: 'EO, C, V, ACLP, CO',
-                inProgram: 'Yes',
+                inProgram: true,
               },
             ],
           },
@@ -258,13 +258,13 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'inv3',
             text: 'Observe the client\'s physical inventory count and perform test counts for a representative sample of inventory items.',
             assertions: 'EO, C, RO',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'inv4',
             text: 'Evaluate receiving and shipping cutoff procedures to ensure inventory and cost of sales are recorded in the correct period.',
             assertions: 'CO',
-            inProgram: 'Yes',
+            inProgram: true,
           },
         ],
       },
@@ -284,25 +284,25 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'pay1',
             text: 'Reconcile total payroll per the payroll register to the general ledger and investigate variances.',
             assertions: 'C, RO, V',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'pay2',
             text: 'Test a sample of employees for proper authorization, correct rate of pay, and agreement to employment records.',
             assertions: 'EO, C, V',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'pay3',
             text: 'Evaluate the year-end payroll accrual by recalculating accrued wages, salaries, vacation, and bonuses.',
             assertions: 'C, V, CO',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'pay4',
             text: 'Agree executive compensation to board-approved compensation arrangements and verify disclosure requirements.',
             assertions: 'EO, V, PD',
-            inProgram: 'Yes',
+            inProgram: true,
           },
         ],
       },
@@ -322,25 +322,25 @@ const AUDIT_AREAS: AuditArea[] = [
             id: 'eq1',
             text: 'Obtain and review equity rollforward schedules for common stock, additional paid-in capital, retained earnings, and other comprehensive income.',
             assertions: 'EO, C, RO, V',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'eq2',
             text: 'Agree dividends declared and paid to board of directors minutes and authorization.',
             assertions: 'EO, C',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'eq3',
             text: 'Confirm shares outstanding and other equity information with the transfer agent.',
             assertions: 'C, RO',
-            inProgram: 'Yes',
+            inProgram: true,
           },
           {
             id: 'eq4',
             text: 'Evaluate disclosures for equity-related transactions for completeness and accuracy per applicable accounting standards.',
             assertions: 'C, PD',
-            inProgram: 'Yes',
+            inProgram: true,
           },
         ],
       },
@@ -358,8 +358,7 @@ export function AuditProgramWorkspace({ onClose }: AuditProgramWorkspaceProps) {
   const [activeAreaId, setActiveAreaId] = useState(AUDIT_AREAS[0].id)
   const [editMode, setEditMode] = useState(true)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
-  const [inProgram, setInProgram] = useState<Record<string, InProgram>>({})
-  const [hasUnsaved, setHasUnsaved] = useState(true)
+  const [inProgram, setInProgram] = useState<Record<string, boolean>>({})
 
   const activeArea = AUDIT_AREAS.find((a) => a.id === activeAreaId)!
 
@@ -375,10 +374,10 @@ export function AuditProgramWorkspace({ onClose }: AuditProgramWorkspaceProps) {
 
   const expandAll = () => setCollapsed(new Set())
 
-  const getProgramValue = (proc: Procedure): InProgram =>
+  const getProgramValue = (proc: Procedure): boolean =>
     inProgram[proc.id] ?? proc.inProgram
 
-  const setProgram = (id: string, val: InProgram) => {
+  const setProgram = (id: string, val: boolean) => {
     setInProgram((prev) => ({ ...prev, [id]: val }))
     setHasUnsaved(true)
   }
@@ -593,11 +592,11 @@ function ProcedureRow({
 }: {
   proc: Procedure
   depth: number
-  getValue: (p: Procedure) => InProgram
-  setValue: (id: string, val: InProgram) => void
+  getValue: (p: Procedure) => boolean
+  setValue: (id: string, val: boolean) => void
 }) {
   const [childrenCollapsed, setChildrenCollapsed] = useState(false)
-  const value = getValue(proc)
+  const checked = getValue(proc)
   const hasChildren = (proc.children?.length ?? 0) > 0
 
   return (
@@ -636,32 +635,18 @@ function ProcedureRow({
           {proc.assertions}
         </div>
 
-        {/* In program dropdown */}
-        <div className="flex justify-center">
-          <div className="relative">
-            <select
-              value={value}
-              onChange={(e) => setValue(proc.id, e.target.value as InProgram)}
-              className={`appearance-none rounded-md border pr-7 pl-3 py-1 text-xs font-medium transition-colors cursor-pointer focus:outline-none focus:ring-1 ${
-                value === 'Yes'
-                  ? 'border-green-300 bg-green-50 text-green-700'
-                  : value === 'No'
-                  ? 'border-gray-300 bg-white text-gray-600'
-                  : 'border-gray-200 bg-gray-50 text-gray-500'
-              }`}
-              style={value === 'Yes' ? {} : {}}
-              aria-label={`In program: ${proc.text.slice(0, 30)}`}
-            >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-              <option value="N/A">N/A</option>
-            </select>
-            <ChevronDown
-              size={11}
-              className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
-              aria-hidden="true"
-            />
-          </div>
+        {/* In program checkbox */}
+        <div className="flex justify-center pt-0.5">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => setValue(proc.id, e.target.checked)}
+            aria-label={`Include in program: ${proc.text.slice(0, 40)}`}
+            className="h-4 w-4 cursor-pointer rounded border-gray-300 transition-colors focus:ring-2 focus:ring-offset-1"
+            style={{
+              accentColor: 'var(--saf-color-brand-orange, #D64000)',
+            }}
+          />
         </div>
 
         {/* Actions */}
