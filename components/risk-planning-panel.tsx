@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { CheckCircle2, AlertCircle, ChevronRight, Sparkles } from 'lucide-react'
 
 // ─── Data model ──────────────────────────────────────────────────────────────
@@ -231,7 +231,7 @@ export function RiskPlanningPanel({ onAllComplete }: { onAllComplete?: () => voi
   const [activeTab, setActiveTab] = useState(RISK_FORMS[0].id)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [showOpenOnly, setShowOpenOnly] = useState(false)
-  const [notifiedComplete, setNotifiedComplete] = useState(false)
+  const notifiedRef = useRef(false)
 
   const setAnswer = (id: string, val: string) =>
     setAnswers((prev) => ({ ...prev, [id]: val }))
@@ -246,12 +246,11 @@ export function RiskPlanningPanel({ onAllComplete }: { onAllComplete?: () => voi
 
   // Fire onAllComplete exactly once when all items are filled in
   useEffect(() => {
-    if (totalOpenItems === 0 && !notifiedComplete && onAllComplete) {
-      setNotifiedComplete(true)
-      const timer = setTimeout(() => onAllComplete(), 800)
-      return () => clearTimeout(timer)
+    if (totalOpenItems === 0 && !notifiedRef.current && onAllComplete) {
+      notifiedRef.current = true
+      onAllComplete()
     }
-  }, [totalOpenItems, notifiedComplete, onAllComplete])
+  }, [totalOpenItems, onAllComplete])
 
   const suggestedNextSteps = useMemo(
     () => deriveSuggestedNextSteps(RISK_FORMS, answers),

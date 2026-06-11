@@ -108,7 +108,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [showAuditProgram, setShowAuditProgram] = useState(false)
 
   const handleAllRiskItemsComplete = useCallback(() => {
-    setAuditProgramReady(true)
+    setTimeout(() => setAuditProgramReady(true), 1000)
   }, [])
 
   const scrollRef = useRef<HTMLDivElement>(null)
