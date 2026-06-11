@@ -31,22 +31,8 @@ const bottomNavItems = [
   { icon: HelpCircle, label: 'Help' },
 ]
 
-interface SidebarProps {
-  activeItem?: string
-  onNavigate?: (label: string) => void
-}
-
-export function Sidebar({ activeItem: controlledActive, onNavigate }: SidebarProps) {
-  const [internalActive, setInternalActive] = useState('Conversations')
-  const activeItem = controlledActive ?? internalActive
-
-  const handleClick = (label: string) => {
-    if (onNavigate) {
-      onNavigate(label)
-    } else {
-      setInternalActive(label)
-    }
-  }
+export function Sidebar() {
+  const [activeItem, setActiveItem] = useState('Conversations')
 
   return (
     <aside
@@ -72,7 +58,7 @@ export function Sidebar({ activeItem: controlledActive, onNavigate }: SidebarPro
         {navItems.map(({ icon: Icon, label, badge, active: _active }) => (
           <button
             key={label}
-            onClick={() => handleClick(label)}
+            onClick={() => setActiveItem(label)}
             aria-label={label}
             aria-current={activeItem === label ? 'page' : undefined}
             className={`relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${

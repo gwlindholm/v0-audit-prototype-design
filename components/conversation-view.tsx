@@ -26,7 +26,6 @@ interface EngagementData {
 interface ConversationViewProps {
   userPrompt: string
   engagementData?: EngagementData | null
-  onNavigate?: (label: string) => void
 }
 
 // Parse the engagement context out of the prompt if no structured data provided
@@ -92,7 +91,7 @@ const NEXT_STEPS = [
 // Typing speed in ms per character
 const TYPING_SPEED = 8
 
-export function ConversationView({ userPrompt, onNavigate }: ConversationViewProps) {
+export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [followUpValue, setFollowUpValue] = useState('')
   const [isTyping, setIsTyping] = useState(true)
   const [displayedParagraphs, setDisplayedParagraphs] = useState<string[]>([])
@@ -342,11 +341,6 @@ export function ConversationView({ userPrompt, onNavigate }: ConversationViewPro
               {NEXT_STEPS.map(({ label, icon }) => (
                 <button
                   key={label}
-                  onClick={() => {
-                    if (label === 'Identify risks') {
-                      onNavigate?.('Workspaces')
-                    }
-                  }}
                   className="flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50 text-left"
                   style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
                 >
