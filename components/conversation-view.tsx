@@ -12,6 +12,7 @@ import {
   ChevronRight,
   CheckCircle2,
 } from 'lucide-react'
+import { RiskPlanningPanel } from '@/components/risk-planning-panel'
 
 const MAX_CHARS = 45000
 
@@ -101,6 +102,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [showNextSteps, setShowNextSteps] = useState(false)
   const [currentParaIndex, setCurrentParaIndex] = useState(0)
   const [currentCharIndex, setCurrentCharIndex] = useState(0)
+  const [identifyRisksClicked, setIdentifyRisksClicked] = useState(false)
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -341,6 +343,11 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
               {NEXT_STEPS.map(({ label, icon }) => (
                 <button
                   key={label}
+                  onClick={() => {
+                    if (label === 'Identify risks') {
+                      setIdentifyRisksClicked(true)
+                    }
+                  }}
                   className="flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50 text-left"
                   style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
                 >
@@ -356,6 +363,36 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                 </button>
               ))}
             </div>
+          )}
+
+          {/* Risk planning panel — appended as a new turn when Identify risks is clicked */}
+          {identifyRisksClicked && (
+            <>
+              {/* User turn */}
+              <div className="flex items-start gap-3">
+                <div
+                  className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white"
+                  style={{ backgroundColor: 'var(--saf-color-brand-orange, #D64000)' }}
+                  aria-label="User avatar"
+                >
+                  GR
+                </div>
+                <p className="text-sm leading-relaxed text-gray-800">Identify risks</p>
+              </div>
+
+              {/* CoCounsel response turn */}
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
+                  <TRSmallDot />
+                </div>
+                <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
+                  <p>
+                    I&apos;ve pulled the Risk Planning forms from Guided Assurance for each of your selected audit areas and pre-filled them using prior year documentation. Forms with outstanding items are highlighted — use the tabs to navigate each form, or toggle to focus on open items only.
+                  </p>
+                  <RiskPlanningPanel />
+                </div>
+              </div>
+            </>
           )}
 
           {/* Scroll anchor */}
