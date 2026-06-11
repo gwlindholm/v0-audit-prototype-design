@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { CheckCircle2, AlertCircle } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { CheckCircle2, AlertCircle, ChevronRight, Sparkles } from 'lucide-react'
 
 // ─── Data model ──────────────────────────────────────────────────────────────
 
@@ -175,7 +175,42 @@ const RISK_FORMS: RiskForm[] = [
   },
 ]
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Suggested next steps derived from open items ────────────────────────────
+
+const OPEN_ITEM_NEXT_STEPS: Record<string, string> = {
+  'cash-control':     'Assess and document control risk for Cash before finalizing the audit approach',
+  'cash-cutoff':      'Determine whether cash cutoff testing is required around the period-end date',
+  'ar-control':       'Evaluate and record Accounts Receivable control risk to complete the risk matrix',
+  'ar-allowance':     'Assess adequacy of the allowance for doubtful accounts and document conclusion',
+  'ar-scope':         'Document the scope and sampling rationale for Accounts Receivable confirmations',
+  'rev-recognition':  'Identify which ASC 606 step carries the highest revenue recognition risk',
+  'rev-journals':     'Confirm whether journal entry testing is required for manual revenue entries',
+  'inv-obs-date':     'Schedule and document the planned inventory observation date',
+  'inv-costing':      'Determine whether cost rollback testing is needed for Inventory valuation',
+  'inv-scope':        'Complete scope notes for the Inventory & Cost of Sales audit procedures',
+  'pay-accrual':      'Select the year-end payroll accrual testing approach and document rationale',
+  'eq-repurchase':    'Confirm whether share repurchase activity occurred and document the conclusion',
+  'eq-auth':          'Verify board authorization of dividends and agree to board minutes',
+}
+
+function deriveSuggestedNextSteps(
+  forms: RiskForm[],
+  answers: Record<string, string>
+): string[] {
+  const steps: string[] = []
+  for (const form of forms) {
+    for (const section of form.sections) {
+      for (const field of section.fields) {
+        const isOpen = !answers[field.id] && !field.prefilled
+        if (isOpen && OPEN_ITEM_NEXT_STEPS[field.id]) {
+          steps.push(OPEN_ITEM_NEXT_STEPS[field.id])
+        }
+      }
+    }
+  }
+  // Return up to 4 most actionable suggestions
+  return steps.slice(0, 4)
+}
 
 function openItemCount(form: RiskForm, answers: Record<string, string>): number {
   return form.sections.flatMap((s) => s.fields).filter(
@@ -203,6 +238,11 @@ export function RiskPlanningPanel() {
   const activeForm = RISK_FORMS.find((f) => f.id === activeTab)!
   const openCount = (form: RiskForm) => openItemCount(form, answers)
 
+  const suggestedNextSteps = useMemo(
+    () => deriveSuggestedNextSteps(RISK_FORMS, answers),
+    [answers]
+  )
+
   const visibleSections = activeForm.sections.map((section) => ({
     ...section,
     fields: showOpenOnly
@@ -213,6 +253,7 @@ export function RiskPlanningPanel() {
   const activeOpenCount = openCount(activeForm)
 
   return (
+  <>
     <div
       className="w-full rounded-2xl border bg-white overflow-hidden"
       style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
@@ -358,6 +399,27 @@ export function RiskPlanningPanel() {
         </a>
       </div>
     </div>
+
+    {/* Suggested next steps */}
+    {suggestedNextSteps.length > 0 && (
+      <div className="space-y-2 pt-2">
+        <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
+          <Sparkles size={12} aria-hidden="true" />
+          Suggested next steps
+        </p>
+        {suggestedNextSteps.map((step) => (
+          <button
+            key={step}
+            className="flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50 text-left"
+            style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
+          >
+            <span>{step}</span>
+            <ChevronRight size={14} className="shrink-0 text-gray-400" aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+    )}
+  </>
   )
 }
 
