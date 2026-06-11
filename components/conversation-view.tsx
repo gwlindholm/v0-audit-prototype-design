@@ -119,7 +119,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   // Auto-scroll to bottom as content streams in
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-  }, [displayedParagraphs, showLinks, showPrevYear, showNextSteps, currentCharIndex, identifyRisksClicked, auditProgramReady])
+  })
 
   // Sequence: approach box -> paragraph 0 -> paragraph 1 -> paragraph 2 -> links -> prev year -> next steps
   useEffect(() => {
