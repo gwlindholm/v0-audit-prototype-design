@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   Plus,
   Paperclip,
@@ -107,6 +107,10 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [auditProgramReady, setAuditProgramReady] = useState(false)
   const [showAuditProgram, setShowAuditProgram] = useState(false)
 
+  const handleAllRiskItemsComplete = useCallback(() => {
+    setAuditProgramReady(true)
+  }, [])
+
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const responseContent = useRef<ResponseContent>(buildEngagementResponse(userPrompt))
@@ -115,7 +119,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   // Auto-scroll to bottom as content streams in
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-  }, [displayedParagraphs, showLinks, showPrevYear, showNextSteps, currentCharIndex])
+  }, [displayedParagraphs, showLinks, showPrevYear, showNextSteps, currentCharIndex, identifyRisksClicked, auditProgramReady])
 
   // Sequence: approach box -> paragraph 0 -> paragraph 1 -> paragraph 2 -> links -> prev year -> next steps
   useEffect(() => {
@@ -392,7 +396,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                   <p>
                     I&apos;ve pulled the Risk Planning forms from Guided Assurance for each of your selected audit areas and pre-filled them using prior year documentation. Forms with outstanding items are highlighted — use the tabs to navigate each form, or toggle to focus on open items only.
                   </p>
-                  <RiskPlanningPanel onAllComplete={() => setAuditProgramReady(true)} />
+                  <RiskPlanningPanel onAllComplete={handleAllRiskItemsComplete} />
                 </div>
               </div>
             </>
