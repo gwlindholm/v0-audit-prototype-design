@@ -108,12 +108,19 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [riskNextSteps, setRiskNextSteps] = useState<string[]>([])
 
   const handleAllRiskItemsComplete = useCallback(() => {
-    setTimeout(() => setAuditProgramReady(true), 1000)
+    // no-op — kept for future use
   }, [])
 
   const handleRiskNextStepsChange = useCallback((steps: string[]) => {
     setRiskNextSteps(steps)
   }, [])
+
+  // Show audit procedure recommendations shortly after identify risks is clicked
+  useEffect(() => {
+    if (!identifyRisksClicked) return
+    const timer = setTimeout(() => setAuditProgramReady(true), 1200)
+    return () => clearTimeout(timer)
+  }, [identifyRisksClicked])
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -428,7 +435,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
             </>
           )}
 
-          {/* Audit procedure recommendations — CoCounsel message turn */}
+          {/* Audit procedure recommendations — shown once risk planning is complete */}
           {auditProgramReady && (
             <div className="flex items-start gap-3">
               <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
@@ -436,7 +443,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
               </div>
               <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
                 <p>
-                  Now that risk planning and assessment is complete, I&apos;ve reviewed the audit program and identified procedures that should be added or excluded based on the risk assessment. Review each recommendation below and accept or dismiss to finalize the program.
+                  Now that risk planning is complete, I&apos;ve reviewed the audit program and identified procedures that should be added or excluded based on the risk assessment. Review each recommendation below and accept or dismiss to finalize the program.
                 </p>
                 <AuditProcedureRecommendations />
               </div>

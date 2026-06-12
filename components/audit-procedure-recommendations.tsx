@@ -366,21 +366,12 @@ export function AuditProcedureRecommendations() {
 
       {/* Footer */}
       <div
-        className="flex items-center justify-between border-t px-4 py-2.5"
+        className="flex items-center border-t px-4 py-2.5"
         style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
       >
         <span className="text-xs text-gray-400">
           Based on risk assessment · Sourced from Guided Assurance
         </span>
-        <a
-          href="#audit-program"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs font-medium hover:underline"
-          style={{ color: 'var(--saf-color-brand-orange, #D64000)' }}
-        >
-          Open full audit program ↗
-        </a>
       </div>
     </div>
   )
