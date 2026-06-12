@@ -4,29 +4,86 @@ import { useState } from 'react'
 import { Sidebar } from '@/components/sidebar'
 import { PromptInput } from '@/components/prompt-input'
 import { TemplateChips } from '@/components/template-chips'
+import { NewEngagementTemplate } from '@/components/new-engagement-template'
+import { ConversationView } from '@/components/conversation-view'
 
 export function CoCounselHome() {
-  const [_submitted, setSubmitted] = useState<string | null>(null)
+  const [prefillPrompt, setPrefillPrompt] = useState<string>('')
+  const [activeTemplate, setActiveTemplate] = useState<string | null>(null)
+  const [conversationPrompt, setConversationPrompt] = useState<string | null>(null)
+
+  const handleTemplateSelect = (template: string) => {
+    if (template === 'Start a new engagement') {
+      setActiveTemplate('new-engagement')
+    }
+  }
+
+  const handleEngagementUse = (data: {
+    client: string
+    startDate: string
+    endDate: string
+    keyAuditAreas: string[]
+    usePreviousYear: boolean | null
+  }) => {
+    const fmt = (d: string) => {
+      if (!d) return d
+      const [y, m, day] = d.split('-')
+      return `${m}/${day}/${y}`
+    }
+
+    const areasList = data.keyAuditAreas.join(', ')
+    const previousYear = data.usePreviousYear ? 'Yes' : 'No'
+
+    const prompt = [
+      `Start a new audit engagement for ${data.client}.`,
+      ``,
+      `Engagement period: ${fmt(data.startDate)} – ${fmt(data.endDate)}.`,
+      ``,
+      `Key audit areas to address: ${areasList}.`,
+      ``,
+      `Use previous year's engagement to recommend audit risk and procedure changes: ${previousYear}.`,
+      ``,
+      `Please generate an audit engagement plan including recommended audit procedures, identified risk areas, and any changes from the prior year engagement based on the selected parameters above.`,
+    ].join('\n')
+
+    setActiveTemplate(null)
+    setPrefillPrompt(prompt)
+  }
+
+  const isInConversation = conversationPrompt !== null
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-white">
       <Sidebar />
 
-      {/* Top bar */}
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-12 shrink-0 items-center justify-between border-b px-4"
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Top bar */}
+        <header
+          className="flex h-12 shrink-0 items-center justify-between border-b px-4"
           style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
         >
           <button
-            className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+            className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-50"
             style={{ borderColor: 'var(--saf-color-brand-orange, #D64000)', color: 'var(--saf-color-brand-orange, #D64000)' }}
             aria-label="View all conversations"
+            onClick={() => {
+              if (isInConversation) {
+                setConversationPrompt(null)
+                setPrefillPrompt('')
+              }
+            }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
             All conversations
           </button>
+
+          {isInConversation && (
+            <p className="text-sm font-semibold text-gray-800 text-balance text-center">
+              New Audit Engagement
+            </p>
+          )}
 
           <button
             className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
@@ -38,29 +95,48 @@ export function CoCounselHome() {
           </button>
         </header>
 
-        {/* Main content */}
-        <main className="flex flex-1 flex-col w-full items-center justify-center overflow-auto px-4 py-8 text-center">
-          <div className="flex w-full max-w-2xl mx-auto flex-col items-center gap-6 text-center">
-            {/* TR animated logo */}
-            <div aria-hidden="true">
-              <TRLargeLogo />
-            </div>
+        {/* Conversation view */}
+        {isInConversation ? (
+          <main className="flex flex-1 flex-col overflow-hidden">
+            <ConversationView userPrompt={conversationPrompt} />
+          </main>
+        ) : (
+          /* Home / prompt view */
+          <main className="flex flex-1 flex-col w-full items-center justify-center overflow-auto px-4 py-8 text-center">
+            <div className="flex w-full max-w-2xl mx-auto flex-col items-center gap-6 text-center">
+              {/* TR animated logo */}
+              <div aria-hidden="true">
+                <TRLargeLogo />
+              </div>
 
-            {/* Heading */}
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-900">Your questions answered</h1>
-              <p className="mt-1 text-sm text-gray-500">What are you working on today?</p>
-            </div>
+              {/* Heading */}
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-gray-900">Your questions answered</h1>
+                <p className="mt-1 text-sm text-gray-500">What are you working on today?</p>
+              </div>
 
-            {/* Prompt input */}
-            <div className="w-full">
-              <PromptInput onSubmit={(val) => setSubmitted(val)} />
-            </div>
+              {/* Prompt input or active template */}
+              <div className="w-full">
+                {activeTemplate === 'new-engagement' ? (
+                  <NewEngagementTemplate
+                    onRemove={() => setActiveTemplate(null)}
+                    onUse={handleEngagementUse}
+                  />
+                ) : (
+                  <PromptInput
+                    initialValue={prefillPrompt}
+                    onSubmit={(val) => setConversationPrompt(val)}
+                  />
+                )}
+              </div>
 
-            {/* Template chips */}
-            <TemplateChips onSelect={(template) => setSubmitted(template)} />
-          </div>
-        </main>
+              {/* Template chips — hide when a template is active */}
+              {activeTemplate === null && (
+                <TemplateChips onSelect={handleTemplateSelect} />
+              )}
+            </div>
+          </main>
+        )}
       </div>
     </div>
   )
