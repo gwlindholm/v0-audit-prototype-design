@@ -108,19 +108,12 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [riskNextSteps, setRiskNextSteps] = useState<string[]>([])
 
   const handleAllRiskItemsComplete = useCallback(() => {
-    // no-op — kept for future use
+    setTimeout(() => setAuditProgramReady(true), 800)
   }, [])
 
   const handleRiskNextStepsChange = useCallback((steps: string[]) => {
     setRiskNextSteps(steps)
   }, [])
-
-  // Show audit procedure recommendations shortly after identify risks is clicked
-  useEffect(() => {
-    if (!identifyRisksClicked) return
-    const timer = setTimeout(() => setAuditProgramReady(true), 1200)
-    return () => clearTimeout(timer)
-  }, [identifyRisksClicked])
 
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
