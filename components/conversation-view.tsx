@@ -13,7 +13,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { RiskPlanningPanel } from '@/components/risk-planning-panel'
-import { AuditProgramWorkspace } from '@/components/audit-program-workspace'
+import { AuditProcedureRecommendations } from '@/components/audit-procedure-recommendations'
 
 const MAX_CHARS = 45000
 
@@ -105,7 +105,6 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [currentCharIndex, setCurrentCharIndex] = useState(0)
   const [identifyRisksClicked, setIdentifyRisksClicked] = useState(false)
   const [auditProgramReady, setAuditProgramReady] = useState(false)
-  const [showAuditProgram, setShowAuditProgram] = useState(false)
   const [riskNextSteps, setRiskNextSteps] = useState<string[]>([])
 
   const handleAllRiskItemsComplete = useCallback(() => {
@@ -429,7 +428,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
             </>
           )}
 
-          {/* Audit program ready — CoCounsel message turn */}
+          {/* Audit procedure recommendations — CoCounsel message turn */}
           {auditProgramReady && (
             <div className="flex items-start gap-3">
               <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
@@ -437,20 +436,9 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
               </div>
               <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
                 <p>
-                  Now that risk planning and assessment is complete, I&apos;ve started drafting the audit program for you. Procedures have been pre-selected based on the risk levels and assessments documented in the risk planning forms.
+                  Now that risk planning and assessment is complete, I&apos;ve reviewed the audit program and identified procedures that should be added or excluded based on the risk assessment. Review each recommendation below and accept or dismiss to finalize the program.
                 </p>
-                <button
-                  onClick={() => setShowAuditProgram(true)}
-                  className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                  style={{ backgroundColor: 'var(--saf-color-brand-orange, #D64000)' }}
-                >
-                  Open audit program
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </button>
+                <AuditProcedureRecommendations />
               </div>
             </div>
           )}
@@ -510,13 +498,6 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
           CoCounsel uses generative AI. Verify all data and responses for accuracy.
         </p>
       </div>
-
-      {/* Audit program workspace overlay */}
-      {showAuditProgram && (
-        <div className="absolute inset-0 z-50 flex flex-col bg-white">
-          <AuditProgramWorkspace onClose={() => setShowAuditProgram(false)} />
-        </div>
-      )}
     </div>
   )
 }
