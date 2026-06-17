@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { CheckCircle2, PlusCircle, MinusCircle, ChevronDown } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { CheckCircle2, PlusCircle, MinusCircle, ChevronDown, ExternalLink } from 'lucide-react'
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -264,20 +264,32 @@ function RecommendationRow({
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function AuditProcedureRecommendations() {
+export function AuditProcedureRecommendations({ onAllReviewed }: { onAllReviewed?: () => void }) {
   const [activeTabId, setActiveTabId] = useState(RECOMMENDATIONS[0].id)
   const [accepted, setAccepted] = useState<Set<string>>(new Set())
   const [dismissed, setDismissed] = useState<Set<string>>(new Set())
+  const notifiedRef = useRef(false)
 
   const accept = (id: string) => setAccepted((prev) => new Set(prev).add(id))
   const dismiss = (id: string) => setDismissed((prev) => new Set(prev).add(id))
 
   const activeArea = RECOMMENDATIONS.find((a) => a.id === activeTabId)!
 
+  const totalRecs = RECOMMENDATIONS.reduce((s, a) => s + a.recommendations.length, 0)
+  const totalReviewed = accepted.size + dismissed.size
+
   const getOpenCount = (area: AreaRecommendations) =>
     area.recommendations.filter(
       (r) => !accepted.has(r.id) && !dismissed.has(r.id)
     ).length
+
+  // Fire once when every recommendation has been accepted or dismissed
+  useEffect(() => {
+    if (totalReviewed === totalRecs && !notifiedRef.current && onAllReviewed) {
+      notifiedRef.current = true
+      setTimeout(() => onAllReviewed(), 600)
+    }
+  }, [totalReviewed, totalRecs, onAllReviewed])
 
   return (
     <div

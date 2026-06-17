@@ -105,6 +105,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [currentCharIndex, setCurrentCharIndex] = useState(0)
   const [identifyRisksClicked, setIdentifyRisksClicked] = useState(false)
   const [auditProgramReady, setAuditProgramReady] = useState(false)
+  const [exportReady, setExportReady] = useState(false)
   const [riskNextSteps, setRiskNextSteps] = useState<string[]>([])
 
   const handleAllRiskItemsComplete = useCallback(() => {
@@ -113,6 +114,10 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
 
   const handleRiskNextStepsChange = useCallback((steps: string[]) => {
     setRiskNextSteps(steps)
+  }, [])
+
+  const handleAllRecsReviewed = useCallback(() => {
+    setExportReady(true)
   }, [])
 
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -438,7 +443,51 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                 <p>
                   Now that risk planning is complete, I&apos;ve reviewed the audit program and identified procedures that should be added or excluded based on the risk assessment. Review each recommendation below and accept or dismiss to finalize the program.
                 </p>
-                <AuditProcedureRecommendations />
+                <AuditProcedureRecommendations onAllReviewed={handleAllRecsReviewed} />
+              </div>
+            </div>
+          )}
+
+          {/* Export to Guided Assurance — shown once all recommendations are reviewed */}
+          {exportReady && (
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
+                <TRSmallDot />
+              </div>
+              <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
+                <p>
+                  All procedure recommendations have been reviewed. The updated audit program is ready to export — I&apos;ve applied all accepted additions and exclusions. Click below to send the finalized audit program to Guided Assurance, where you can open it to view the complete program with all procedures and assignments.
+                </p>
+                <div
+                  className="rounded-xl border p-4 space-y-3"
+                  style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)', backgroundColor: '#fafafa' }}
+                >
+                  <div className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0" aria-hidden="true" />
+                    <span>Audit program updated with accepted procedure changes</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0" aria-hidden="true" />
+                    <span>Excluded procedures flagged and removed from program</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0" aria-hidden="true" />
+                    <span>Risk linkages carried forward from planning forms</span>
+                  </div>
+                  <a
+                    href="https://guidedassurance.thomsonreuters.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                    style={{ backgroundColor: 'var(--saf-color-brand-orange, #D64000)' }}
+                  >
+                    Export to Guided Assurance
+                    <ExternalLink size={14} aria-hidden="true" />
+                  </a>
+                  <p className="text-center text-xs text-gray-400">
+                    Opens Guided Assurance in a new tab with the full audit program loaded
+                  </p>
+                </div>
               </div>
             </div>
           )}
