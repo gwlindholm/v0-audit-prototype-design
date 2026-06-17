@@ -396,7 +396,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                 <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
                   <TRSmallDot />
                 </div>
-                <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
+                <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
                   <p>
                     I&apos;ve pulled the Risk Planning forms from Guided Assurance for each of your selected audit areas and pre-filled them using prior year documentation. Forms with outstanding items are highlighted — use the tabs to navigate each form, or toggle to focus on open items only.
                   </p>
@@ -434,7 +434,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
               <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
                 <TRSmallDot />
               </div>
-              <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
+              <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
                 <p>
                   Now that risk planning is complete, I&apos;ve reviewed the audit program and identified procedures that should be added or excluded based on the risk assessment. Review each recommendation below and accept or dismiss to finalize the program.
                 </p>
