@@ -13,7 +13,7 @@ export function CoCounselHome() {
   const [conversationPrompt, setConversationPrompt] = useState<string | null>(null)
 
   const handleTemplateSelect = (template: string) => {
-    if (template === 'Start a new engagement') {
+    if (template === 'Create Audit Plan') {
       setActiveTemplate('new-engagement')
     }
   }
