@@ -19,9 +19,7 @@ const MAX_CHARS = 45000
 
 interface EngagementData {
   client: string
-  startDate: string
-  endDate: string
-  keyAuditAreas: string[]
+  engagement: string
   usePreviousYear: boolean | null
 }
 
@@ -30,44 +28,42 @@ interface ConversationViewProps {
   engagementData?: EngagementData | null
 }
 
-// Parse the engagement context out of the prompt if no structured data provided
-function parseEngagementFromPrompt(prompt: string): Partial<EngagementData> {
-  const clientMatch = prompt.match(/for (.+?)\./i)
-  const client = clientMatch ? clientMatch[1] : 'the client'
-  const areasMatch = prompt.match(/Key audit areas to address: (.+?)\./i)
-  const areas = areasMatch ? areasMatch[1].split(', ') : []
-  return { client, keyAuditAreas: areas }
+// Parse the engagement and client out of the prompt
+function parseEngagementFromPrompt(prompt: string): { client: string; engagement: string } {
+  const match = prompt.match(/for (.+?) — (.+?)\./i)
+  const client = match ? match[1] : 'the client'
+  const engagement = match ? match[2] : 'the selected engagement'
+  return { client, engagement }
 }
 
 function buildEngagementResponse(prompt: string): ResponseContent {
-  const parsed = parseEngagementFromPrompt(prompt)
-  const client = parsed.client ?? 'the client'
-  const areas = parsed.keyAuditAreas ?? []
+  const { client, engagement } = parseEngagementFromPrompt(prompt)
 
-  const formLinks: FormLink[] = areas.slice(0, 6).map((area, i) => ({
-    id: `GA-${2024 + i}-${String(i + 1).padStart(3, '0')}`,
-    label: `${area} — Guided Assurance Form`,
-    url: '#guided-assurance',
-  }))
+  const formLinks: FormLink[] = [
+    { id: 'EM-DOC-001', label: `${engagement} — Prior Year Audit Workpapers`, url: '#engagement-manager' },
+    { id: 'EM-DOC-002', label: `${engagement} — Trial Balance & General Ledger`, url: '#engagement-manager' },
+    { id: 'EM-DOC-003', label: `${engagement} — Board Meeting Minutes`, url: '#engagement-manager' },
+    { id: 'EM-DOC-004', label: `${engagement} — Financial Statements`, url: '#engagement-manager' },
+  ]
 
   return {
     approachSteps: [
-      `Pull prior year engagement binder for ${client} from Engagement Manager and identify carryforward items, roll-forward schedules, and previously noted risks.`,
-      `Create a new engagement binder in Engagement Manager pre-populated with the selected audit areas and applicable period dates.`,
-      `Source the required Guided Assurance forms for each selected audit area and attach them to the new engagement binder.`,
-      `Cross-reference prior year risk assessments and auditor notes to flag recommended procedure changes for the current engagement.`,
+      `Access the existing engagement for ${client} in Engagement Manager and retrieve all attached documents, including prior year workpapers, trial balance, and board minutes.`,
+      `Analyze the prior year audit findings, carryforward items, and previously documented risks to identify areas requiring attention in the current year.`,
+      `Review the trial balance and general ledger for significant changes, unusual fluctuations, or new account activity since the prior year.`,
+      `Synthesize findings across all available documents to inform risk assessment and audit procedure selection for the current engagement.`,
     ],
     paragraphs: [
-      `I've set up a new audit engagement binder for **${client}** in Engagement Manager. The binder has been pre-populated with the engagement period and the ${areas.length} selected audit areas. You can view and access the engagement directly in Engagement Manager using the link below.`,
-      `While setting up this engagement, I referenced the prior year documentation for ${client}. Based on that review, I've flagged several carry-forward risk items and recommended procedure updates — these are noted inline within the relevant Guided Assurance forms.`,
-      `The following Guided Assurance forms have been pulled in and attached to the engagement binder based on your selected audit areas. Each form is pre-linked to its corresponding risk and procedure sections from the prior year:`,
+      `I've reviewed the existing engagement for **${client}** in Engagement Manager. Based on the documents attached to **${engagement}**, I've analyzed the prior year audit workpapers, trial balance, general ledger, board meeting minutes, and other supporting materials.`,
+      `The prior year audit workpapers show several carry-forward risk areas and open items from the prior engagement. Board minutes reference a restructuring of the treasury function and a new revenue stream from a licensing agreement — both of which will need to be reflected in this year's risk assessment.`,
+      `The following documents from Engagement Manager have been reviewed and form the basis for the risk planning and audit procedure selection steps ahead:`,
     ],
     engagementManagerLink: {
-      label: `View engagement for ${client} in Engagement Manager`,
+      label: `View ${engagement} in Engagement Manager`,
       url: '#engagement-manager',
     },
     formLinks,
-    previousYearNote: `Prior year documentation reviewed: carryforward schedules, risk assessments, and auditor sign-off notes have been incorporated as starting points in the relevant forms above.`,
+    previousYearNote: `Prior year audit findings reviewed: carryforward schedules, risk flags, and auditor sign-off notes from ${engagement} have been incorporated as the baseline for risk planning.`,
   }
 }
 
@@ -403,7 +399,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                 </div>
                 <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
                   <p>
-                    I&apos;ve pulled the Risk Planning forms from Guided Assurance for each of your selected audit areas and pre-filled them using prior year documentation. Forms with outstanding items are highlighted — use the tabs to navigate each form, or toggle to focus on open items only.
+                    Based on the documents reviewed in Engagement Manager, I&apos;ve pre-populated the Risk Planning forms in Guided Assurance using the prior year audit findings, trial balance fluctuations, and board minutes. Forms with open items that need your input are highlighted — navigate each form using the tabs, or toggle to focus only on what needs to be completed.
                   </p>
                   <RiskPlanningPanel
                     onAllComplete={handleAllRiskItemsComplete}
