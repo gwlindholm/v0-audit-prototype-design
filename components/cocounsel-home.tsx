@@ -20,26 +20,13 @@ export function CoCounselHome() {
 
   const handleEngagementUse = (data: {
     client: string
-    startDate: string
-    endDate: string
-    keyAuditAreas: string[]
+    engagement: string
     usePreviousYear: boolean | null
   }) => {
-    const fmt = (d: string) => {
-      if (!d) return d
-      const [y, m, day] = d.split('-')
-      return `${m}/${day}/${y}`
-    }
-
-    const areasList = data.keyAuditAreas.join(', ')
     const previousYear = data.usePreviousYear ? 'Yes' : 'No'
 
     const prompt = [
-      `Start a new audit engagement for ${data.client}.`,
-      ``,
-      `Engagement period: ${fmt(data.startDate)} – ${fmt(data.endDate)}.`,
-      ``,
-      `Key audit areas to address: ${areasList}.`,
+      `Create an audit plan for ${data.client} — ${data.engagement}.`,
       ``,
       `Use previous year's engagement to recommend audit risk and procedure changes: ${previousYear}.`,
       ``,
