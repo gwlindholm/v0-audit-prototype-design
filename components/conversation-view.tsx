@@ -399,7 +399,7 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                 </div>
                 <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
                   <p>
-                    Based on the documents reviewed in Engagement Manager, I&apos;ve pre-populated the Risk Planning forms in Guided Assurance using the prior year audit findings, trial balance fluctuations, and board minutes. Forms with open items that need your input are highlighted — navigate each form using the tabs, or toggle to focus only on what needs to be completed.
+                    Based on the documents reviewed in Engagement Manager, I&apos;ve pre-populated the Guided Assurance risk planning forms — Forms 08–17 and PIN-CX-4.1 — using prior year audit findings, trial balance fluctuations, and board minutes. Key findings include a new licensing revenue stream and a treasury restructuring that affect Revenue (Form 09), Payroll (Form 17), and Internal Control (PIN-CX-4.1). Forms with open items that need your input are highlighted — navigate each form using the tabs, or toggle to focus only on what needs to be completed.
                   </p>
                   <RiskPlanningPanel
                     onAllComplete={handleAllRiskItemsComplete}

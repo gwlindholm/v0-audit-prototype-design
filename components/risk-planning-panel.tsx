@@ -22,57 +22,162 @@ export interface FormSection {
 export interface RiskForm {
   id: string
   title: string
+  formRef: string   // Guided Assurance form number
   sections: FormSection[]
 }
 
 // ─── Pre-filled risk planning forms ─────────────────────────────────────────
+// Pre-population derived from Guided Assurance forms PIN-CX-4.1, PIN-CX-4.2.3,
+// PIN-CX-3.1–3.6, PIN-CX-1.1, and numbered forms 08–17.
+// Engagement: Setup 1 · Client: 21AUG25RELEASE1 · FY: 12/31/2026
 
 const RISK_FORMS: RiskForm[] = [
   {
     id: 'cash',
     title: 'Cash',
+    formRef: 'Form 10',
     sections: [
       {
         title: 'Risk Assessment',
         fields: [
-          { id: 'cash-inherent', label: 'Inherent risk level', type: 'risk', prefilled: 'Low', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'cash-control', label: 'Control risk level', type: 'risk', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'cash-fraud', label: 'Fraud risk identified?', type: 'yesno', prefilled: 'No' },
-          { id: 'cash-remark', label: 'Prior year risk remarks', type: 'textarea', prefilled: 'No significant risks noted in prior year. Reconciliations were completed timely.' },
+          {
+            id: 'cash-inherent',
+            label: 'Inherent risk level',
+            type: 'risk',
+            prefilled: 'Low',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'cash-control',
+            label: 'Control risk level',
+            type: 'risk',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'cash-fraud',
+            label: 'Fraud risk identified? (AU-C 240 / ISA 240)',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+          {
+            id: 'cash-restriction',
+            label: 'Restricted cash balances present?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+          {
+            id: 'cash-remark',
+            label: 'Prior year risk remarks',
+            type: 'textarea',
+            prefilled: 'No significant risks noted in prior year. Bank reconciliations were completed timely with no unreconciled differences. Three bank accounts confirmed; all confirmations returned without exception.',
+          },
         ],
       },
       {
         title: 'Audit Procedures',
         fields: [
-          { id: 'cash-confirm', label: 'Bank confirmations to be obtained?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'cash-recon', label: 'Reconciliation review approach', type: 'select', prefilled: 'Detail testing', options: ['Analytical review', 'Detail testing', 'Combined approach'] },
-          { id: 'cash-cutoff', label: 'Cutoff testing required?', type: 'yesno' },
-          { id: 'cash-scope', label: 'Scope notes', type: 'textarea', prefilled: 'Test all accounts with balance > $50K. Confirm top 3 bank accounts.' },
+          {
+            id: 'cash-confirm',
+            label: 'Bank confirmations to be obtained? (Standard Form)',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'cash-recon',
+            label: 'Reconciliation review approach',
+            type: 'select',
+            prefilled: 'Detail testing',
+            options: ['Analytical review', 'Detail testing', 'Combined approach'],
+          },
+          {
+            id: 'cash-cutoff',
+            label: 'Cutoff testing required around 12/31/2026?',
+            type: 'yesno',
+          },
+          {
+            id: 'cash-scope',
+            label: 'Scope notes',
+            type: 'textarea',
+            prefilled: 'Test all accounts with balance > $50K. Confirm top 3 bank accounts. Trace outstanding checks and deposits in transit to subsequent clearance.',
+          },
         ],
       },
     ],
   },
   {
     id: 'ar',
-    title: 'Accounts Receivable',
+    title: 'Trade Receivables',
+    formRef: 'Form 12',
     sections: [
       {
         title: 'Risk Assessment',
         fields: [
-          { id: 'ar-inherent', label: 'Inherent risk level', type: 'risk', prefilled: 'Medium', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'ar-control', label: 'Control risk level', type: 'risk', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'ar-fraud', label: 'Fraud risk identified?', type: 'yesno', prefilled: 'No' },
-          { id: 'ar-allowance', label: 'Allowance for doubtful accounts — adequacy concern?', type: 'yesno' },
-          { id: 'ar-cutoff', label: 'Revenue cutoff risk', type: 'risk', prefilled: 'Medium', options: ['Low', 'Medium', 'High', 'Significant'] },
+          {
+            id: 'ar-inherent',
+            label: 'Inherent risk level',
+            type: 'risk',
+            prefilled: 'Medium',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'ar-control',
+            label: 'Control risk level',
+            type: 'risk',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'ar-fraud',
+            label: 'Fraud risk — fictitious or overstated receivables?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+          {
+            id: 'ar-allowance',
+            label: 'Allowance for doubtful accounts — adequacy concern?',
+            type: 'yesno',
+          },
+          {
+            id: 'ar-cutoff',
+            label: 'Revenue cutoff risk at period-end',
+            type: 'risk',
+            prefilled: 'Medium',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'ar-concentration',
+            label: 'Significant customer concentration?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
         ],
       },
       {
         title: 'Audit Procedures',
         fields: [
-          { id: 'ar-confirm', label: 'Positive confirmations to be sent?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'ar-sample', label: 'Sampling approach', type: 'select', prefilled: 'Statistical sampling', options: ['Statistical sampling', 'Judgmental sampling', 'Full population'] },
-          { id: 'ar-aging', label: 'Aging analysis required?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'ar-scope', label: 'Scope notes', type: 'textarea' },
+          {
+            id: 'ar-confirm',
+            label: 'Positive confirmations to be sent?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'ar-sample',
+            label: 'Sampling approach',
+            type: 'select',
+            prefilled: 'Statistical sampling',
+            options: ['Statistical sampling', 'Judgmental sampling', 'Full population'],
+          },
+          {
+            id: 'ar-aging',
+            label: 'Aging analysis required?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'ar-scope',
+            label: 'Scope notes',
+            type: 'textarea',
+          },
         ],
       },
     ],
@@ -80,95 +185,391 @@ const RISK_FORMS: RiskForm[] = [
   {
     id: 'revenue',
     title: 'Revenue',
+    formRef: 'Form 09',
     sections: [
       {
         title: 'Risk Assessment',
         fields: [
-          { id: 'rev-inherent', label: 'Inherent risk level', type: 'risk', prefilled: 'High', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'rev-control', label: 'Control risk level', type: 'risk', prefilled: 'Medium', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'rev-fraud', label: 'Fraud risk — fictitious revenue?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'rev-recognition', label: 'ASC 606 step with highest risk', type: 'select', options: ['Identify contract', 'Identify obligations', 'Determine price', 'Allocate price', 'Recognize revenue'] },
-          { id: 'rev-sig', label: 'Significant risk requiring special audit consideration?', type: 'yesno', prefilled: 'Yes' },
+          {
+            id: 'rev-inherent',
+            label: 'Inherent risk level',
+            type: 'risk',
+            prefilled: 'High',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'rev-control',
+            label: 'Control risk level',
+            type: 'risk',
+            prefilled: 'Medium',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'rev-fraud',
+            label: 'Fraud risk — fictitious or premature revenue recognition? (AU-C 240)',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'rev-new-stream',
+            label: 'New revenue stream identified (e.g. licensing agreement)?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'rev-recognition',
+            label: 'ASC 606 / IFRS 15 step with highest risk',
+            type: 'select',
+            prefilled: 'Recognize revenue',
+            options: ['Identify contract', 'Identify obligations', 'Determine price', 'Allocate price', 'Recognize revenue'],
+          },
+          {
+            id: 'rev-sig',
+            label: 'Significant risk requiring special audit consideration?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
         ],
       },
       {
         title: 'Audit Procedures',
         fields: [
-          { id: 'rev-cutoff', label: 'Cutoff testing — number of days around year-end', type: 'text', prefilled: '10' },
-          { id: 'rev-analytical', label: 'Analytical procedure approach', type: 'select', prefilled: 'Regression analysis', options: ['Simple trend', 'Ratio analysis', 'Regression analysis', 'Predictive model'] },
-          { id: 'rev-journals', label: 'Journal entry testing for manual revenue entries?', type: 'yesno' },
-          { id: 'rev-scope', label: 'Scope notes', type: 'textarea', prefilled: 'Focus on Q4 entries and manual adjustments. Compare to budget and prior year.' },
+          {
+            id: 'rev-cutoff',
+            label: 'Cutoff testing — number of days around 12/31/2026',
+            type: 'text',
+            prefilled: '10',
+          },
+          {
+            id: 'rev-analytical',
+            label: 'Analytical procedure approach',
+            type: 'select',
+            prefilled: 'Regression analysis',
+            options: ['Simple trend', 'Ratio analysis', 'Regression analysis', 'Predictive model'],
+          },
+          {
+            id: 'rev-journals',
+            label: 'Journal entry testing for manual revenue entries? (AU-C 240.32)',
+            type: 'yesno',
+          },
+          {
+            id: 'rev-licensing',
+            label: 'Specific procedures for new licensing revenue stream?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'rev-scope',
+            label: 'Scope notes',
+            type: 'textarea',
+            prefilled: 'New licensing agreement identified in board minutes — obtain contract, assess performance obligations under ASC 606. Focus on Q4 entries and manual adjustments. Compare to budget and prior year. Evaluate whether revenue is recognized in the correct period.',
+          },
         ],
       },
     ],
   },
   {
     id: 'inventory',
-    title: 'Inventory & Cost of Sales',
+    title: 'Inventories',
+    formRef: 'Form 14',
     sections: [
       {
         title: 'Risk Assessment',
         fields: [
-          { id: 'inv-inherent', label: 'Inherent risk level', type: 'risk', prefilled: 'High', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'inv-control', label: 'Control risk level', type: 'risk', prefilled: 'Medium', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'inv-obsolete', label: 'Obsolescence risk?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'inv-valuation', label: 'Valuation method', type: 'select', prefilled: 'FIFO', options: ['FIFO', 'LIFO', 'Weighted average', 'Specific identification'] },
-          { id: 'inv-obs', label: 'Physical inventory observation required?', type: 'yesno', prefilled: 'Yes' },
+          {
+            id: 'inv-inherent',
+            label: 'Inherent risk level',
+            type: 'risk',
+            prefilled: 'High',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'inv-control',
+            label: 'Control risk level',
+            type: 'risk',
+            prefilled: 'Medium',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'inv-obsolete',
+            label: 'Obsolescence risk?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'inv-valuation',
+            label: 'Cost flow assumption',
+            type: 'select',
+            prefilled: 'FIFO',
+            options: ['FIFO', 'LIFO', 'Weighted average', 'Specific identification'],
+          },
+          {
+            id: 'inv-obs',
+            label: 'Physical inventory observation required? (AU-C 501)',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
         ],
       },
       {
         title: 'Audit Procedures',
         fields: [
-          { id: 'inv-obs-date', label: 'Planned observation date', type: 'text' },
-          { id: 'inv-cutoff', label: 'Receiving/shipping cutoff procedures?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'inv-costing', label: 'Cost rollback testing required?', type: 'yesno' },
-          { id: 'inv-scope', label: 'Scope notes', type: 'textarea' },
+          {
+            id: 'inv-obs-date',
+            label: 'Planned observation date',
+            type: 'text',
+          },
+          {
+            id: 'inv-cutoff',
+            label: 'Receiving/shipping cutoff procedures at 12/31/2026?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'inv-costing',
+            label: 'Cost rollback testing required?',
+            type: 'yesno',
+          },
+          {
+            id: 'inv-nrv',
+            label: 'Net realizable value analysis required?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'inv-scope',
+            label: 'Scope notes',
+            type: 'textarea',
+          },
         ],
       },
     ],
   },
   {
     id: 'payroll',
-    title: 'Payroll & Related Expenses',
+    title: 'Payroll',
+    formRef: 'Form 17',
     sections: [
       {
         title: 'Risk Assessment',
         fields: [
-          { id: 'pay-inherent', label: 'Inherent risk level', type: 'risk', prefilled: 'Medium', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'pay-control', label: 'Control risk level', type: 'risk', prefilled: 'Low', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'pay-ghost', label: 'Ghost employee risk?', type: 'yesno', prefilled: 'No' },
-          { id: 'pay-comp', label: 'Executive compensation — special disclosure required?', type: 'yesno', prefilled: 'Yes' },
+          {
+            id: 'pay-inherent',
+            label: 'Inherent risk level',
+            type: 'risk',
+            prefilled: 'Medium',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'pay-control',
+            label: 'Control risk level',
+            type: 'risk',
+            prefilled: 'Low',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'pay-ghost',
+            label: 'Ghost employee risk?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+          {
+            id: 'pay-restructure',
+            label: 'Treasury restructuring — impact on payroll classification?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'pay-comp',
+            label: 'Executive compensation — special disclosure required?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
         ],
       },
       {
         title: 'Audit Procedures',
         fields: [
-          { id: 'pay-headcount', label: 'Headcount reconciliation required?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'pay-accrual', label: 'Year-end accrual testing approach', type: 'select', options: ['Recalculation', 'Inquiry + analytical', 'Detail vouching'] },
-          { id: 'pay-scope', label: 'Scope notes', type: 'textarea', prefilled: 'Agree payroll register to GL. Test top 20 earners for authorization.' },
+          {
+            id: 'pay-headcount',
+            label: 'Headcount reconciliation required?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'pay-accrual',
+            label: 'Year-end accrual testing approach',
+            type: 'select',
+            options: ['Recalculation', 'Inquiry + analytical', 'Detail vouching'],
+          },
+          {
+            id: 'pay-treasury',
+            label: 'Evaluate payroll reclassification from treasury restructuring?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'pay-scope',
+            label: 'Scope notes',
+            type: 'textarea',
+            prefilled: 'Agree payroll register to GL. Test top 20 earners for authorization. Confirm treasury restructuring has not resulted in misclassification of compensation expense.',
+          },
         ],
       },
     ],
   },
   {
-    id: 'equity',
-    title: 'Equity',
+    id: 'internal-control',
+    title: 'Internal Control',
+    formRef: 'PIN-CX-4.1',
     sections: [
       {
-        title: 'Risk Assessment',
+        title: 'Control Environment (AU-C 315 / ISA 315)',
         fields: [
-          { id: 'eq-inherent', label: 'Inherent risk level', type: 'risk', prefilled: 'Low', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'eq-control', label: 'Control risk level', type: 'risk', prefilled: 'Low', options: ['Low', 'Medium', 'High', 'Significant'] },
-          { id: 'eq-complex', label: 'Complex equity instruments present?', type: 'yesno', prefilled: 'No' },
-          { id: 'eq-repurchase', label: 'Share repurchase activity in period?', type: 'yesno' },
+          {
+            id: 'ic-commitment',
+            label: 'Does management demonstrate commitment to integrity and ethical values?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'ic-env-found',
+            label: 'Does the control environment provide an appropriate foundation for other IC components?',
+            type: 'yesno',
+          },
+          {
+            id: 'ic-env-notes',
+            label: 'Control environment observations',
+            type: 'textarea',
+            prefilled: 'Management has established reporting lines and accountability structures consistent with financial reporting objectives. Board oversight appears appropriate for the size and complexity of the entity.',
+          },
         ],
       },
       {
-        title: 'Audit Procedures',
+        title: 'Risk Assessment Process',
         fields: [
-          { id: 'eq-recon', label: 'Equity rollforward reconciliation?', type: 'yesno', prefilled: 'Yes' },
-          { id: 'eq-auth', label: 'Board authorization of dividends confirmed?', type: 'yesno' },
-          { id: 'eq-scope', label: 'Scope notes', type: 'textarea', prefilled: 'Agree to minutes and confirm with transfer agent.' },
+          {
+            id: 'ic-ra-appropriate',
+            label: 'Is the risk assessment process relevant to the financial statements appropriate?',
+            type: 'yesno',
+          },
+          {
+            id: 'ic-ra-fraud',
+            label: 'Has management considered the potential for fraud in its risk assessment?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'ic-ra-changes',
+            label: 'Significant changes in the entity\'s risk environment in the current year?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'ic-ra-notes',
+            label: 'Risk assessment notes',
+            type: 'textarea',
+            prefilled: 'Treasury restructuring and new licensing revenue stream represent changes that could significantly impact the system of internal control. Management should document how these have been addressed in the risk assessment.',
+          },
+        ],
+      },
+      {
+        title: 'Monitoring',
+        fields: [
+          {
+            id: 'ic-mon-appropriate',
+            label: 'Is the monitoring process relevant to the financial statements appropriate?',
+            type: 'yesno',
+          },
+          {
+            id: 'ic-mon-internal-audit',
+            label: 'Does the entity have an internal audit function?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+          {
+            id: 'ic-mon-notes',
+            label: 'Monitoring observations',
+            type: 'textarea',
+            prefilled: 'Management relies on monthly financial reports, budget variance analysis, and account reconciliations for monitoring purposes.',
+          },
+        ],
+      },
+      {
+        title: 'Information & Communication',
+        fields: [
+          {
+            id: 'ic-comm-appropriate',
+            label: 'Does the communication process appropriately support preparation of financial statements?',
+            type: 'yesno',
+          },
+          {
+            id: 'ic-comm-notes',
+            label: 'Information system and communication observations',
+            type: 'textarea',
+            prefilled: 'Entity uses an ERP system for transaction processing. Management communicates significant financial reporting matters to those charged with governance via quarterly board presentations.',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'analytical',
+    title: 'Analytical',
+    formRef: 'Form 08',
+    sections: [
+      {
+        title: 'Financial Statement Risk — Overall',
+        fields: [
+          {
+            id: 'anal-fs-risk',
+            label: 'Overall financial statement risk level',
+            type: 'risk',
+            prefilled: 'Medium',
+            options: ['Low', 'Medium', 'High', 'Significant'],
+          },
+          {
+            id: 'anal-going-concern',
+            label: 'Going concern risk identified?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+          {
+            id: 'anal-material-weakness',
+            label: 'Material weaknesses noted in prior year?',
+            type: 'yesno',
+            prefilled: 'No',
+          },
+        ],
+      },
+      {
+        title: 'Preliminary Analytical Procedures',
+        fields: [
+          {
+            id: 'anal-approach',
+            label: 'Overall analytical approach',
+            type: 'select',
+            prefilled: 'Ratio analysis',
+            options: ['Simple trend', 'Ratio analysis', 'Regression analysis', 'Predictive model'],
+          },
+          {
+            id: 'anal-unusual',
+            label: 'Unusual fluctuations identified in trial balance?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'anal-new-accounts',
+            label: 'New account activity since prior year?',
+            type: 'yesno',
+            prefilled: 'Yes',
+          },
+          {
+            id: 'anal-notes',
+            label: 'Analytical observations',
+            type: 'textarea',
+            prefilled: 'Trial balance review identified unusual fluctuation in revenue (new licensing stream) and a reclassification in treasury-related payroll expense. New accounts opened for licensing arrangements require additional scrutiny. Prior year comparative analysis shows significant YoY variance in operating income.',
+          },
         ],
       },
     ],
@@ -178,19 +579,28 @@ const RISK_FORMS: RiskForm[] = [
 // ─── Suggested next steps derived from open items ────────────────────────────
 
 const OPEN_ITEM_NEXT_STEPS: Record<string, string> = {
-  'cash-control':     'Assess and document control risk for Cash before finalizing the audit approach',
-  'cash-cutoff':      'Determine whether cash cutoff testing is required around the period-end date',
-  'ar-control':       'Evaluate and record Accounts Receivable control risk to complete the risk matrix',
-  'ar-allowance':     'Assess adequacy of the allowance for doubtful accounts and document conclusion',
-  'ar-scope':         'Document the scope and sampling rationale for Accounts Receivable confirmations',
-  'rev-recognition':  'Identify which ASC 606 step carries the highest revenue recognition risk',
-  'rev-journals':     'Confirm whether journal entry testing is required for manual revenue entries',
-  'inv-obs-date':     'Schedule and document the planned inventory observation date',
-  'inv-costing':      'Determine whether cost rollback testing is needed for Inventory valuation',
-  'inv-scope':        'Complete scope notes for the Inventory & Cost of Sales audit procedures',
-  'pay-accrual':      'Select the year-end payroll accrual testing approach and document rationale',
-  'eq-repurchase':    'Confirm whether share repurchase activity occurred and document the conclusion',
-  'eq-auth':          'Verify board authorization of dividends and agree to board minutes',
+  // Cash (Form 10)
+  'cash-control':       'Assess and document control risk for Cash before finalizing the audit approach',
+  'cash-cutoff':        'Determine whether cash cutoff testing is required around 12/31/2026',
+  // Trade Receivables (Form 12)
+  'ar-control':         'Evaluate and record Trade Receivables control risk to complete the risk matrix',
+  'ar-allowance':       'Assess adequacy of the allowance for doubtful accounts and document conclusion',
+  'ar-scope':           'Document scope and sampling rationale for Accounts Receivable confirmations',
+  // Revenue (Form 09)
+  'rev-journals':       'Confirm whether journal entry testing is required for manual revenue entries (AU-C 240.32)',
+  // Inventories (Form 14)
+  'inv-obs-date':       'Schedule and document the planned inventory observation date (AU-C 501)',
+  'inv-costing':        'Determine whether cost rollback testing is needed for Inventory valuation',
+  'inv-scope':          'Complete scope notes for the Inventories audit procedures',
+  // Payroll (Form 17)
+  'pay-accrual':        'Select the year-end payroll accrual testing approach and document rationale',
+  // Internal Control (PIN-CX-4.1)
+  'ic-env-found':       'Document whether the control environment provides an appropriate foundation for other IC components',
+  'ic-ra-appropriate':  'Evaluate and document whether the risk assessment process is appropriate',
+  'ic-mon-appropriate': 'Document evaluation of the monitoring process adequacy',
+  'ic-comm-appropriate':'Document whether the communication process appropriately supports financial statement preparation',
+  // Analytical (Form 08)
+  'anal-unusual':       'Document and investigate unusual fluctuations identified in the trial balance review',
 }
 
 function deriveSuggestedNextSteps(
@@ -334,8 +744,9 @@ export function RiskPlanningPanel({
         className="flex items-center justify-between px-4 py-3 border-b"
         style={{ borderColor: 'var(--saf-color-neutral-100, #f3f4f6)' }}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <h3 className="text-sm font-semibold text-gray-800">{activeForm.title} — Risk Planning</h3>
+          <span className="text-[10px] font-mono text-gray-400 bg-gray-100 rounded px-1.5 py-0.5">{activeForm.formRef}</span>
           {activeOpenCount > 0 && (
             <span className="flex items-center gap-1 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2 py-0.5">
               <AlertCircle size={10} aria-hidden="true" />
@@ -410,7 +821,7 @@ export function RiskPlanningPanel({
         style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
       >
         <span className="text-xs text-gray-400">
-          Source: Guided Assurance · Pre-filled from prior year engagement
+          Source: Guided Assurance · {activeForm.formRef} · Pre-filled from prior year engagement
         </span>
         <a
           href="#guided-assurance"
