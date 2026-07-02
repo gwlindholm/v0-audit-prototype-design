@@ -99,8 +99,8 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [showNextSteps, setShowNextSteps] = useState(false)
   const [currentParaIndex, setCurrentParaIndex] = useState(0)
   const [currentCharIndex, setCurrentCharIndex] = useState(0)
-  const [identifyRisksClicked, setIdentifyRisksClicked] = useState(true)
-  const [auditProgramReady, setAuditProgramReady] = useState(true)
+  const [identifyRisksClicked, setIdentifyRisksClicked] = useState(false)
+  const [auditProgramReady, setAuditProgramReady] = useState(false)
   const [exportReady, setExportReady] = useState(false)
   const [riskNextSteps, setRiskNextSteps] = useState<string[]>([])
 
