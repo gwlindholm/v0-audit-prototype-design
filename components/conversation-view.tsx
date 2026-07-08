@@ -13,15 +13,13 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { RiskPlanningPanel } from '@/components/risk-planning-panel'
-import { AuditProgramWorkspace } from '@/components/audit-program-workspace'
+import { AuditProcedureRecommendations } from '@/components/audit-procedure-recommendations'
 
 const MAX_CHARS = 45000
 
 interface EngagementData {
   client: string
-  startDate: string
-  endDate: string
-  keyAuditAreas: string[]
+  engagement: string
   usePreviousYear: boolean | null
 }
 
@@ -30,44 +28,42 @@ interface ConversationViewProps {
   engagementData?: EngagementData | null
 }
 
-// Parse the engagement context out of the prompt if no structured data provided
-function parseEngagementFromPrompt(prompt: string): Partial<EngagementData> {
-  const clientMatch = prompt.match(/for (.+?)\./i)
-  const client = clientMatch ? clientMatch[1] : 'the client'
-  const areasMatch = prompt.match(/Key audit areas to address: (.+?)\./i)
-  const areas = areasMatch ? areasMatch[1].split(', ') : []
-  return { client, keyAuditAreas: areas }
+// Parse the engagement and client out of the prompt
+function parseEngagementFromPrompt(prompt: string): { client: string; engagement: string } {
+  const match = prompt.match(/for (.+?) — (.+?)\./i)
+  const client = match ? match[1] : 'the client'
+  const engagement = match ? match[2] : 'the selected engagement'
+  return { client, engagement }
 }
 
 function buildEngagementResponse(prompt: string): ResponseContent {
-  const parsed = parseEngagementFromPrompt(prompt)
-  const client = parsed.client ?? 'the client'
-  const areas = parsed.keyAuditAreas ?? []
+  const { client, engagement } = parseEngagementFromPrompt(prompt)
 
-  const formLinks: FormLink[] = areas.slice(0, 6).map((area, i) => ({
-    id: `GA-${2024 + i}-${String(i + 1).padStart(3, '0')}`,
-    label: `${area} — Guided Assurance Form`,
-    url: '#guided-assurance',
-  }))
+  const formLinks: FormLink[] = [
+    { id: 'EM-DOC-001', label: `${engagement} — Prior Year Audit Workpapers`, url: '#engagement-manager' },
+    { id: 'EM-DOC-002', label: `${engagement} — Trial Balance & General Ledger`, url: '#engagement-manager' },
+    { id: 'EM-DOC-003', label: `${engagement} — Board Meeting Minutes`, url: '#engagement-manager' },
+    { id: 'EM-DOC-004', label: `${engagement} — Financial Statements`, url: '#engagement-manager' },
+  ]
 
   return {
     approachSteps: [
-      `Pull prior year engagement binder for ${client} from Engagement Manager and identify carryforward items, roll-forward schedules, and previously noted risks.`,
-      `Create a new engagement binder in Engagement Manager pre-populated with the selected audit areas and applicable period dates.`,
-      `Source the required Guided Assurance forms for each selected audit area and attach them to the new engagement binder.`,
-      `Cross-reference prior year risk assessments and auditor notes to flag recommended procedure changes for the current engagement.`,
+      `Access the existing engagement for ${client} in Engagement Manager and retrieve all attached documents, including prior year workpapers, trial balance, and board minutes.`,
+      `Analyze the prior year audit findings, carryforward items, and previously documented risks to identify areas requiring attention in the current year.`,
+      `Review the trial balance and general ledger for significant changes, unusual fluctuations, or new account activity since the prior year.`,
+      `Synthesize findings across all available documents to inform risk assessment and audit procedure selection for the current engagement.`,
     ],
     paragraphs: [
-      `I've set up a new audit engagement binder for **${client}** in Engagement Manager. The binder has been pre-populated with the engagement period and the ${areas.length} selected audit areas. You can view and access the engagement directly in Engagement Manager using the link below.`,
-      `While setting up this engagement, I referenced the prior year documentation for ${client}. Based on that review, I've flagged several carry-forward risk items and recommended procedure updates — these are noted inline within the relevant Guided Assurance forms.`,
-      `The following Guided Assurance forms have been pulled in and attached to the engagement binder based on your selected audit areas. Each form is pre-linked to its corresponding risk and procedure sections from the prior year:`,
+      `I've reviewed the existing engagement for **${client}** in Engagement Manager. Based on the documents attached to **${engagement}**, I've analyzed the prior year audit workpapers, trial balance, general ledger, board meeting minutes, and other supporting materials.`,
+      `The prior year audit workpapers show several carry-forward risk areas and open items from the prior engagement. Board minutes reference a restructuring of the treasury function and a new revenue stream from a licensing agreement — both of which will need to be reflected in this year's risk assessment.`,
+      `The following documents from Engagement Manager have been reviewed and form the basis for the risk planning and audit procedure selection steps ahead:`,
     ],
     engagementManagerLink: {
-      label: `View engagement for ${client} in Engagement Manager`,
+      label: `View ${engagement} in Engagement Manager`,
       url: '#engagement-manager',
     },
     formLinks,
-    previousYearNote: `Prior year documentation reviewed: carryforward schedules, risk assessments, and auditor sign-off notes have been incorporated as starting points in the relevant forms above.`,
+    previousYearNote: `Prior year audit findings reviewed: carryforward schedules, risk flags, and auditor sign-off notes from ${engagement} have been incorporated as the baseline for risk planning.`,
   }
 }
 
@@ -105,10 +101,19 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
   const [currentCharIndex, setCurrentCharIndex] = useState(0)
   const [identifyRisksClicked, setIdentifyRisksClicked] = useState(false)
   const [auditProgramReady, setAuditProgramReady] = useState(false)
-  const [showAuditProgram, setShowAuditProgram] = useState(false)
+  const [exportReady, setExportReady] = useState(false)
+  const [riskNextSteps, setRiskNextSteps] = useState<string[]>([])
 
   const handleAllRiskItemsComplete = useCallback(() => {
-    setTimeout(() => setAuditProgramReady(true), 1000)
+    setTimeout(() => setAuditProgramReady(true), 800)
+  }, [])
+
+  const handleRiskNextStepsChange = useCallback((steps: string[]) => {
+    setRiskNextSteps(steps)
+  }, [])
+
+  const handleAllRecsReviewed = useCallback(() => {
+    setExportReady(true)
   }, [])
 
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -392,38 +397,93 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
                 <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
                   <TRSmallDot />
                 </div>
-                <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
+                <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
                   <p>
-                    I&apos;ve pulled the Risk Planning forms from Guided Assurance for each of your selected audit areas and pre-filled them using prior year documentation. Forms with outstanding items are highlighted — use the tabs to navigate each form, or toggle to focus on open items only.
+                    Based on the documents reviewed in Engagement Manager, I&apos;ve pre-populated the Guided Assurance risk planning forms — Forms 08–17 and PIN-CX-4.1 — using prior year audit findings, trial balance fluctuations, and board minutes. Key findings include a new licensing revenue stream and a treasury restructuring that affect Revenue (Form 09), Payroll (Form 17), and Internal Control (PIN-CX-4.1). Forms with open items that need your input are highlighted — navigate each form using the tabs, or toggle to focus only on what needs to be completed.
                   </p>
-                  <RiskPlanningPanel onAllComplete={handleAllRiskItemsComplete} />
+                  <RiskPlanningPanel
+                    onAllComplete={handleAllRiskItemsComplete}
+                    onSuggestedStepsChange={handleRiskNextStepsChange}
+                  />
+                  {/* Suggested next steps from open risk items */}
+                  {riskNextSteps.length > 0 && (
+                    <div className="space-y-2 pt-1">
+                      <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
+                        <Sparkles size={12} aria-hidden="true" />
+                        Suggested next steps
+                      </p>
+                      {riskNextSteps.map((step) => (
+                        <button
+                          key={step}
+                          className="flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50 text-left"
+                          style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)' }}
+                        >
+                          <span>{step}</span>
+                          <ChevronRight size={14} className="shrink-0 text-gray-400" aria-hidden="true" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </>
           )}
 
-          {/* Audit program ready — CoCounsel message turn */}
+          {/* Audit procedure recommendations — shown once risk planning is complete */}
           {auditProgramReady && (
             <div className="flex items-start gap-3">
               <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
                 <TRSmallDot />
               </div>
-              <div className="flex-1 space-y-3 text-sm leading-relaxed text-gray-800">
+              <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
                 <p>
-                  Now that risk planning and assessment is complete, I&apos;ve started drafting the audit program for you. Procedures have been pre-selected based on the risk levels and assessments documented in the risk planning forms.
+                  Now that risk planning is complete, I&apos;ve reviewed the audit program and identified procedures that should be added or excluded based on the risk assessment. Review each recommendation below and accept or dismiss to finalize the program.
                 </p>
-                <button
-                  onClick={() => setShowAuditProgram(true)}
-                  className="inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
-                  style={{ backgroundColor: 'var(--saf-color-brand-orange, #D64000)' }}
+                <AuditProcedureRecommendations onAllReviewed={handleAllRecsReviewed} />
+              </div>
+            </div>
+          )}
+
+          {/* Export to Guided Assurance — shown once all recommendations are reviewed */}
+          {exportReady && (
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 shrink-0" aria-label="CoCounsel">
+                <TRSmallDot />
+              </div>
+              <div className="flex-1 min-w-0 space-y-3 text-sm leading-relaxed text-gray-800">
+                <p>
+                  All procedure recommendations have been reviewed. The updated audit program is ready to export — I&apos;ve applied all accepted additions and exclusions. Click below to send the finalized audit program to Guided Assurance, where you can open it to view the complete program with all procedures and assignments.
+                </p>
+                <div
+                  className="rounded-xl border p-4 space-y-3"
+                  style={{ borderColor: 'var(--saf-color-neutral-200, #e5e7eb)', backgroundColor: '#fafafa' }}
                 >
-                  Open audit program
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                    <polyline points="15 3 21 3 21 9" />
-                    <line x1="10" y1="14" x2="21" y2="3" />
-                  </svg>
-                </button>
+                  <div className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0" aria-hidden="true" />
+                    <span>Audit program updated with accepted procedure changes</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0" aria-hidden="true" />
+                    <span>Excluded procedures flagged and removed from program</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm text-gray-700">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0" aria-hidden="true" />
+                    <span>Risk linkages carried forward from planning forms</span>
+                  </div>
+                  <a
+                    href="https://guidedassurance.thomsonreuters.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:opacity-90"
+                    style={{ backgroundColor: 'var(--saf-color-brand-orange, #D64000)' }}
+                  >
+                    Export to Guided Assurance
+                    <ExternalLink size={14} aria-hidden="true" />
+                  </a>
+                  <p className="text-center text-xs text-gray-400">
+                    Opens Guided Assurance in a new tab with the full audit program loaded
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -483,13 +543,6 @@ export function ConversationView({ userPrompt }: ConversationViewProps) {
           CoCounsel uses generative AI. Verify all data and responses for accuracy.
         </p>
       </div>
-
-      {/* Audit program workspace overlay */}
-      {showAuditProgram && (
-        <div className="absolute inset-0 z-50 flex flex-col bg-white">
-          <AuditProgramWorkspace onClose={() => setShowAuditProgram(false)} />
-        </div>
-      )}
     </div>
   )
 }
